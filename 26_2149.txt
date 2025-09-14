@@ -1,0 +1,24 @@
+Пример кода на с++
+
+#include <iostream>
+#include <stack> // Подключаем заголовочный файл для стека
+
+int main() {
+    std::stack<int> myStack; // Создаем стек целых чисел
+
+    // Добавляем элементы в стек
+    myStack.push(10);
+    myStack.push(20);
+    myStack.push(30);
+
+    std::cout << "Элементы стека:" << std::endl;
+    // Извлекаем элементы из стека
+    while (!myStack.empty()) {
+        // myStack.top() возвращает верхний элемент без удаления
+        std::cout << myStack.top() << " ";
+        myStack.pop(); // Удаляем верхний элемент
+    }
+    std::cout << std::endl;
+
+    return 0;
+}

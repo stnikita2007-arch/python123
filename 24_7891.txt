@@ -1,0 +1,14 @@
+Пример на Java
+
+import java.util.Stack;
+
+public class StackExample {
+    public static void main(String[] args) {
+        // Создаем новый стек целых чисел
+        Stack<Integer> stack = new Stack<>();
+
+        // Добавляем элементы в стек (операция push)
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        System.out.println("Стек после добавления элементов: " + stack);

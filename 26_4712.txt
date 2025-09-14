@@ -1,0 +1,10 @@
+Пример кода на Python.
+
+
+stack = []
+
+
+stack.append('элемент_1')
+stack.append('элемент_2')
+stack.append('элемент_3')
+print(f"Стек после добавления: {stack}")
