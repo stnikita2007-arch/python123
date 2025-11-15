@@ -1,0 +1,189 @@
+import random
+import math
+
+class GeneticAlgorithm:
+    def __init__(self, population_size=20, generations=50, crossover_prob=0.8, mutation_prob=0.1):
+        self.population_size = population_size
+        self.generations = generations
+        self.crossover_prob = crossover_prob
+        self.mutation_prob = mutation_prob
+        self.chromosome_length = 10  # Длина бинарной строки
+        
+    def fitness_function(self, x):
+        """Целевая функция f(x) = -(x-5)² + 25"""
+        return -(x - 5) ** 2 + 25
+    
+    def binary_to_decimal(self, binary_string):
+        """Преобразование бинарной строки в десятичное число в диапазоне [0, 10]"""
+        decimal = int(binary_string, 2)
+        max_value = 2 ** self.chromosome_length - 1
+        return decimal * 10.0 / max_value
+    
+    def generate_individual(self):
+        """Генерация случайной особи (бинарная строка)"""
+        return ''.join(str(random.randint(0, 1)) for _ in range(self.chromosome_length))
+    
+    def generate_population(self):
+        """Генерация начальной популяции"""
+        return [self.generate_individual() for _ in range(self.population_size)]
+    
+    def evaluate_population(self, population):
+        """Оценка приспособленности популяции"""
+        fitness_scores = []
+        for individual in population:
+            x = self.binary_to_decimal(individual)
+            fitness = self.fitness_function(x)
+            fitness_scores.append(fitness)
+        return fitness_scores
+    
+    def selection(self, population, fitness_scores):
+        """Турнирная селекция"""
+        selected = []
+        for _ in range(self.population_size):
+            # Выбираем 3 случайных особи для турнира
+            tournament = random.sample(list(zip(population, fitness_scores)), 3)
+            # Выбираем особь с наивысшей приспособленностью
+            winner = max(tournament, key=lambda x: x[1])[0]
+            selected.append(winner)
+        return selected
+    
+    def crossover(self, parent1, parent2):
+        """Одноточечный кроссовер"""
+        if random.random() < self.crossover_prob:
+            crossover_point = random.randint(1, self.chromosome_length - 1)
+            child1 = parent1[:crossover_point] + parent2[crossover_point:]
+            child2 = parent2[:crossover_point] + parent1[crossover_point:]
+            return child1, child2
+        else:
+            return parent1, parent2
+    
+    def mutation(self, individual):
+        """Точечная мутация"""
+        individual_list = list(individual)
+        for i in range(len(individual_list)):
+            if random.random() < self.mutation_prob:
+                individual_list[i] = '1' if individual_list[i] == '0' else '0'
+        return ''.join(individual_list)
+    
+    def run(self):
+        """Запуск генетического алгоритма"""
+        # Генерация начальной популяции
+        population = self.generate_population()
+        best_individual = None
+        best_fitness = -float('inf')
+        
+        print("Запуск генетического алгоритма...")
+        print("=" * 50)
+        
+        for generation in range(self.generations):
+            # Оценка приспособленности
+            fitness_scores = self.evaluate_population(population)
+            
+            # Поиск лучшей особи
+            current_best_fitness = max(fitness_scores)
+            current_best_index = fitness_scores.index(current_best_fitness)
+            current_best_individual = population[current_best_index]
+            
+            if current_best_fitness > best_fitness:
+                best_fitness = current_best_fitness
+                best_individual = current_best_individual
+            
+            # Вывод информации о поколении
+            if generation % 10 == 0 or generation == self.generations - 1:
+                x_value = self.binary_to_decimal(current_best_individual)
+                print(f"Поколение {generation:2d}: Лучшая приспособленность = {current_best_fitness:.6f}, "
+                      f"x = {x_value:.6f}")
+            
+            # Селекция
+            selected = self.selection(population, fitness_scores)
+            
+            # Кроссовер и мутация
+            new_population = []
+            for i in range(0, self.population_size, 2):
+                parent1 = selected[i]
+                parent2 = selected[(i + 1) % self.population_size]
+                child1, child2 = self.crossover(parent1, parent2)
+                child1 = self.mutation(child1)
+                child2 = self.mutation(child2)
+                new_population.extend([child1, child2])
+            
+            population = new_population[:self.population_size]
+        
+        # Результаты
+        best_x = self.binary_to_decimal(best_individual)
+        print("=" * 50)
+        print("РЕЗУЛЬТАТЫ:")
+        print(f"Лучшее решение: x = {best_x:.6f}")
+        print(f"Значение функции: f(x) = {best_fitness:.6f}")
+        print(f"Бинарное представление: {best_individual}")
+        
+        return best_x, best_fitness
+
+# Запуск алгоритма 3 раза
+print("Генетический алгоритм для максимизации f(x) = -(x-5)² + 25")
+print("Параметры: популяция=20, поколений=50, P_кроссовер=0.8, P_мутация=0.1")
+print()
+
+for i in range(3):
+    print(f"ЭКСПЕРИМЕНТ {i+1}:")
+    print("-" * 40)
+    ga = GeneticAlgorithm()
+    best_x, best_fitness = ga.run()
+    print(f"Итог эксперимента {i+1}: x = {best_x:.6f}, f(x) = {best_fitness:.6f}")
+    print()
+
+
+
+Генетический алгоритм для максимизации f(x) = -(x-5)² + 25
+Параметры: популяция=20, поколений=50, P_кроссовер=0.8, P_мутация=0.1
+
+ЭКСПЕРИМЕНТ 1:
+----------------------------------------
+Запуск генетического алгоритма...
+==================================================
+Поколение  0: Лучшая приспособленность = 24.997559, x = 4.990196
+Поколение 10: Лучшая приспособленность = 24.999997, x = 5.000000
+Поколение 20: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 30: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 40: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 49: Лучшая приспособленность = 25.000000, x = 5.000000
+==================================================
+РЕЗУЛЬТАТЫ:
+Лучшее решение: x = 5.000000
+Значение функции: f(x) = 25.000000
+Бинарное представление: 1000000000
+Итог эксперимента 1: x = 5.000000, f(x) = 25.000000
+
+ЭКСПЕРИМЕНТ 2:
+----------------------------------------
+Запуск генетического алгоритма...
+==================================================
+Поколение  0: Лучшая приспособленность = 24.926471, x = 4.852941
+Поколение 10: Лучшая приспособленность = 24.999997, x = 5.000000
+Поколение 20: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 30: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 40: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 49: Лучшая приспособленность = 25.000000, x = 5.000000
+==================================================
+РЕЗУЛЬТАТЫ:
+Лучшее решение: x = 5.000000
+Значение функции: f(x) = 25.000000
+Бинарное представление: 1000000000
+Итог эксперимента 2: x = 5.000000, f(x) = 25.000000
+
+ЭКСПЕРИМЕНТ 3:
+----------------------------------------
+Запуск генетического алгоритма...
+==================================================
+Поколение  0: Лучшая приспособленность = 24.926471, x = 4.852941
+Поколение 10: Лучшая приспособленность = 24.999997, x = 5.000000
+Поколение 20: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 30: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 40: Лучшая приспособленность = 25.000000, x = 5.000000
+Поколение 49: Лучшая приспособленность = 25.000000, x = 5.000000
+==================================================
+РЕЗУЛЬТАТЫ:
+Лучшее решение: x = 5.000000
+Значение функции: f(x) = 25.000000
+Бинарное представление: 1000000000
+Итог эксперимента 3: x = 5.000000, f(x) = 25.000000
