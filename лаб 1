@@ -1,0 +1,55 @@
+Ключевые различия между Python, C++ и Java заключаются в следующем:
+Python prioritizes readability with a minimalistic syntax (использует отступы вместо скобок) and development speed. Он работает медленнее из-за динамической типизации и интерпретируемой природы, а памятью управляет сборщик мусора (GC).
+C++, напротив, ориентирован на производительность и контроль. Он имеет строгий синтаксис со статической типизацией и требует ручного управления памятью. Будучи компилируемым, он показывает наивысшую скорость выполнения.
+Java сочетает строгость C++ (статическая типизация, фигурные скобки) с удобством Python (автоматический GC). Код компилируется в байт-код для JVM, что обеспечивает кроссплатформенность и скорость работы выше, чем у Python, но обычно ниже, чем у C++.
+
+Пример на Java
+
+import java.util.Stack;
+
+public class StackExample {
+    public static void main(String[] args) {
+        // Создаем новый стек целых чисел
+        Stack<Integer> stack = new Stack<>();
+
+        // Добавляем элементы в стек (операция push)
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        System.out.println("Стек после добавления элементов: " + stack);
+
+Пример кода на с++
+
+#include <iostream>
+#include <stack> // Подключаем заголовочный файл для стека
+
+int main() {
+    std::stack<int> myStack; // Создаем стек целых чисел
+
+    // Добавляем элементы в стек
+    myStack.push(10);
+    myStack.push(20);
+    myStack.push(30);
+
+    std::cout << "Элементы стека:" << std::endl;
+    // Извлекаем элементы из стека
+    while (!myStack.empty()) {
+        // myStack.top() возвращает верхний элемент без удаления
+        std::cout << myStack.top() << " ";
+        myStack.pop(); // Удаляем верхний элемент
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+
+Пример кода на Python.
+
+
+stack = []
+
+
+stack.append('элемент_1')
+stack.append('элемент_2')
+stack.append('элемент_3')
+print(f"Стек после добавления: {stack}")
